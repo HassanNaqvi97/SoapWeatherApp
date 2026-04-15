@@ -1,0 +1,103 @@
+{
+  "info": {
+    "name": "SoapWeatherApp NOAA SOAP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Two-step SOAP workflow: ZIP -> coordinates, then coordinates -> forecast"
+  },
+  "item": [
+    {
+      "name": "1) LatLonListZipCode",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml; charset=utf-8"
+          },
+          {
+            "key": "SOAPAction",
+            "value": "\"https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl/LatLonListZipCode\""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n               xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n               xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <LatLonListZipCode xmlns=\"https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl\">\n      <zipCodeList>{{zip_code}}</zipCodeList>\n    </LatLonListZipCode>\n  </soap:Body>\n</soap:Envelope>"
+        },
+        "url": {
+          "raw": "https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php",
+          "protocol": "https",
+          "host": [
+            "graphical",
+            "weather",
+            "gov"
+          ],
+          "path": [
+            "xml",
+            "SOAP_server",
+            "ndfdXMLserver.php"
+          ]
+        },
+        "description": "Returns a pipe-separated ZIP lookup, e.g. ZIP,CITY,STATE,LAT,LON"
+      },
+      "response": []
+    },
+    {
+      "name": "2) NDFDgenByDay",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "text/xml; charset=utf-8"
+          },
+          {
+            "key": "SOAPAction",
+            "value": "\"https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl/NDFDgenByDay\""
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n               xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"\n               xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">\n  <soap:Body>\n    <NDFDgenByDay xmlns=\"https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl\">\n      <latitude>{{latitude}}</latitude>\n      <longitude>{{longitude}}</longitude>\n      <startDate>{{start_date}}</startDate>\n      <numDays>{{num_days}}</numDays>\n      <Unit>e</Unit>\n      <format>24 hourly</format>\n    </NDFDgenByDay>\n  </soap:Body>\n</soap:Envelope>"
+        },
+        "url": {
+          "raw": "https://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php",
+          "protocol": "https",
+          "host": [
+            "graphical",
+            "weather",
+            "gov"
+          ],
+          "path": [
+            "xml",
+            "SOAP_server",
+            "ndfdXMLserver.php"
+          ]
+        },
+        "description": "Returns DWML XML forecast wrapped in SOAP response"
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "zip_code",
+      "value": "10001"
+    },
+    {
+      "key": "latitude",
+      "value": "40.748"
+    },
+    {
+      "key": "longitude",
+      "value": "-73.996"
+    },
+    {
+      "key": "start_date",
+      "value": "2026-04-15"
+    },
+    {
+      "key": "num_days",
+      "value": "3"
+    }
+  ]
+}
